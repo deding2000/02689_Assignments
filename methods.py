@@ -43,7 +43,11 @@ def JacobiP(x, alpha, beta, n, matrix = False):
             P = ( a_coef(n=n-1,m=0) + x )*JacobiP(x,alpha,beta,n-1) - a_coef(n=n-1,m=-1)*JacobiP(x,alpha,beta,n-2)
             P /= a_coef(n=n-1,m=1)
     else:
-        P = np.empty((n+1,len(x)))
+        if isinstance(x, (int, float)):
+            lx = 1
+        else:
+            lx = len(x) 
+        P = np.empty((n+1,lx))
         P[0,:] = JacobiP(x, alpha, beta, 0, matrix=False)
         if n>0:
             P[1] = JacobiP(x, alpha, beta, 1, matrix=False)
@@ -114,14 +118,36 @@ def GradJacobiP(x,alpha,beta,n,matrix=False):
     else:
         return (alpha+beta+n+1)/2 * JacobiP(x,alpha+1,beta+1,n-1)
     
-def LTM_2ord(X, N, a, b, c, ffun):
+def LTM_2ord(X, N, a, b, ffun):
     # Legendre Tau Method
-    # Lu = au'' + bu' + cu = ffun
-
-    def udiff():
+    # Lu = au'' + bu' = 1
+    # homogenous boundary conditions
 
 
     x , w = JacobiGQ(0,0,N)
+
+    A = np.zeros((N+1,N+1))
+    for i in range(2,N):
+        A[i,[i-1,i,i+1]] = [ b/a/(2*(i+1)-1) , 1 , b/a/(2*(i+1)+3) ]
+    A[N,[N-1,N]] = [b/a/(2*N-1) , 1]
+    A[0] = (JacobiP(-1,0,0,N,matrix=True)).T
+    A[0] /= 2/(2*np.arange(N+1) + 1)
+    nvec = 2/(2*np.arange(N+1) + 1)
+    A[1] = (JacobiP(1,0,0,N,matrix=True)).T/nvec
+
+    f = ffun(x)
+    f = np.concatenate((f,np.zeros(2)))
+    g = np.empty(N+1)
+    g[[0,1]] = [0,0]
+    for n in range(2,N+1):
+        g[n] = ( f[n-2]/(2*n-3)/(2*n-1) + f[n]*(1/(2*n+3) - 1/(2*n-1)) - f[n+2]/(2*n+5)/(2*n+3) )/a
+
+    u = np.linalg.solve(A,g)
+
+    P = (JacobiP(X,0,0,N,matrix=True)).T/nvec
+
+    return P@u
+
 
     
 
