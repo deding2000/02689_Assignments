@@ -1,6 +1,7 @@
 import numpy as np
 import scipy as sp
 from scipy.special import gamma
+import matplotlib.pyplot as plt
 
 def diff_h(N,j,x,xjs):
     dx = x-xjs[j]
@@ -123,17 +124,16 @@ def LTM_2ord(X, N, a, b, ffun):
     # Lu = au'' + bu' = 1
     # homogenous boundary conditions
 
-
     x , w = JacobiGQ(0,0,N)
 
     A = np.zeros((N+1,N+1))
     for i in range(2,N):
-        A[i,[i-1,i,i+1]] = [ b/a/(2*(i+1)-1) , 1 , b/a/(2*(i+1)+3) ]
+        A[i,[i-1,i,i+1]] = [ b/a/(2*(i)-1) , 1 , b/a/(2*(i)+3) ]
     A[N,[N-1,N]] = [b/a/(2*N-1) , 1]
-    A[0] = (JacobiP(-1,0,0,N,matrix=True)).T
-    A[0] /= 2/(2*np.arange(N+1) + 1)
     nvec = 2/(2*np.arange(N+1) + 1)
+    A[0] = (JacobiP(-1,0,0,N,matrix=True)).T/nvec
     A[1] = (JacobiP(1,0,0,N,matrix=True)).T/nvec
+    print(A)
 
     f = ffun(x)
     f = np.concatenate((f,np.zeros(2)))
