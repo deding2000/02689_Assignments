@@ -9,7 +9,7 @@ def diff_h(N,j,x,xjs):
     dh += np.sin(N*dx/2)*(-(1+1/np.tan(dx/2)**2)/2)/N
     return dh
 
-def Dmatrix(N,xjs):
+def Dmatrix_Fourier(N,xjs):
     D = np.zeros((N,N))
     for i in range(N):
         for j in range(N):
@@ -124,19 +124,19 @@ def LTM_2ord(X, N, a, b, ffun):
     # Lu = au'' + bu' = 1
     # homogenous boundary conditions
 
-    x , w = JacobiGQ(0,0,N)
+    x = JacobiGL(0,0,N)
 
     A = np.zeros((N+1,N+1))
     for i in range(2,N):
-        A[i,[i-1,i,i+1]] = [ b/a/(2*(i)-1) , 1 , b/a/(2*(i)+3) ]
+        A[i,[i-1,i,i+1]] = [ b/a/(2*(i)-1) , 1 , -b/a/(2*(i)+3) ]
     A[N,[N-1,N]] = [b/a/(2*N-1) , 1]
-    nvec = 2/(2*np.arange(N+1) + 1)
-    A[0] = (JacobiP(-1,0,0,N,matrix=True)).T/nvec
-    A[1] = (JacobiP(1,0,0,N,matrix=True)).T/nvec
-    print(A)
+    #nvec = 2/(2*np.arange(N+1) + 1)
+    A[0] = (JacobiP(-1,0,0,N,matrix=True)).T#/nvec
+    A[1] = (JacobiP(1,0,0,N,matrix=True)).T#/nvec
 
-    f = ffun(x)
-    f = np.concatenate((f,np.zeros(2)))
+    # constant f
+    f = np.zeros(len(x)+2)
+    f[0] = 1
     g = np.empty(N+1)
     g[[0,1]] = [0,0]
     for n in range(2,N+1):
@@ -144,11 +144,19 @@ def LTM_2ord(X, N, a, b, ffun):
 
     u = np.linalg.solve(A,g)
 
-    P = (JacobiP(X,0,0,N,matrix=True)).T/nvec
+    P = (JacobiP(X,0,0,N,matrix=True)).T#/nvec
 
     return P@u
 
-
+def Dmatrix_Legendre(N,xjs,a,b):
+        dV = GradJacobiP(xjs,0,0,N,matrix=True)
+        V = JacobiP(xjs,0,0,N,matrix=True).T
+        Vi = np.linalg.inv(V)
+        D = dV@Vi * 2/(b-a) # shifted interval
+        for i in range(N):
+            s = np.sum(D[i,:])
+            D[i][i] = -s
+        return D
     
 
 
