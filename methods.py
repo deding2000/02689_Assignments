@@ -153,9 +153,6 @@ def Dmatrix_Legendre(N,xjs,a,b):
         V = JacobiP(xjs,0,0,N,matrix=True).T
         Vi = np.linalg.inv(V)
         D = dV@Vi * 2/(b-a) # shifted interval
-        for i in range(N):
-            s = np.sum(D[i,:])
-            D[i][i] = -s
         return D
     
 
