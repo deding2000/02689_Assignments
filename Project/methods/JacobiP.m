@@ -19,6 +19,7 @@ function P = JacobiP(x, alpha, beta, n, matrix)
             P = P./a_coef(n-1, 1);
         end
     else
+        x = x';
         P = zeros(n+1, length(x));
         P(1, :) = JacobiP(x, alpha, beta, 0, false);
         if n > 0
