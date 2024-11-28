@@ -18,7 +18,6 @@ nvec = sqrt( 2./(2.*(0:(N+1))+1));
 V = V ./ nvec;
 M = inv(V*V');
 Mk = h/2*M;
-Mki = inv(Mk);
 Vx = GradJacobiP(xr,0,0,N+1,true)';
 Vx = Vx./nvec;
 Vi = inv(V);

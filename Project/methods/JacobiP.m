@@ -1,34 +1,31 @@
-function P = JacobiP(x, alpha, beta, n, matrix)
-    function a = a_coef(n, m)
-        if m == -1
-            a = 2*(n+alpha)*(n+beta)/(2*n+alpha+beta+1)/(2*n+alpha+beta);
-        elseif m == 0
-            a = (alpha^2 - beta^2)/(2*n+alpha+beta+2)/(2*n+alpha+beta);
-        else
-            a = 2*(n+1)*(n+alpha+beta+1)/(2*n+alpha+beta+2)/(2*n+alpha+beta+1);
-        end
-    end
-    
-    if ~matrix
-        if n == 0
-            P = ones(size(x));
-        elseif n == 1
-            P = (alpha - beta + (alpha + beta + 2).*x)/2;
-        else
-            P = (a_coef(n-1, 0) + x).*JacobiP(x, alpha, beta, n-1) - a_coef(n-1, -1)*JacobiP(x, alpha, beta, n-2);
-            P = P./a_coef(n-1, 1);
-        end
-    else
-        x = x';
-        P = zeros(n+1, length(x));
-        P(1, :) = JacobiP(x, alpha, beta, 0, false);
-        if n > 0
-            P(2, :) = JacobiP(x, alpha, beta, 1, false);
-        end
-        if n > 1
-            for p = 2:n
-                P(p+1, :) = ((a_coef(p-1, 0) + x).*P(p, :) - a_coef(p-1, -1).*P(p-1, :))./a_coef(p-1, 1);
-            end
-        end
-    end
-end
+function [P] = JacobiP(x,alpha,beta,N);
+% function [P] = JacobiP(x,alpha,beta,N)
+% Purpose: Evaluate Jacobi Polynomial of type (alpha,beta) > -1
+% (alpha+beta <> -1) at points x for order N and returns
+% P[1:length(xp))]
+% Note : They are normalized to be orthonormal.
+% Turn points into row if needed.
+xp = x; dims = size(xp);
+if (dims(2)==1) xp = xp'; end;
+PL = zeros(N+1,length(xp));
+% Initial values P_0(x) and P_1(x)
+gamma0 = 2^(alpha+beta+1)/(alpha+beta+1)*gamma(alpha+1)*...
+gamma(beta+1)/gamma(alpha+beta+1);
+PL(1,:) = 1.0/sqrt(gamma0);
+if (N==0) P=PL'; return; end;
+gamma1 = (alpha+1)*(beta+1)/(alpha+beta+3)*gamma0;
+PL(2,:) = ((alpha+beta+2)*xp/2 + (alpha-beta)/2)/sqrt(gamma1);
+if (N==1) P=PL(N+1,:)'; return; end;
+% Repeat value in recurrence.
+aold = 2/(2+alpha+beta)*sqrt((alpha+1)*(beta+1)/(alpha+beta+3));
+% Forward recurrence using the symmetry of the recurrence.
+for i=1:N-1
+h1 = 2*i+alpha+beta;
+anew = 2/(h1+2)*sqrt( (i+1)*(i+1+alpha+beta)*(i+1+alpha)*...
+(i+1+beta)/(h1+1)/(h1+3));
+bnew = - (alpha^2-beta^2)/h1/(h1+2);
+PL(i+2,:) = 1/anew*( -aold*PL(i,:) + (xp-bnew).*PL(i+1,:));
+aold =anew;
+end;
+P = PL(N+1,:)';
+return
