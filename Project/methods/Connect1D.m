@@ -17,7 +17,7 @@ sk = sk+1;
 end
 end
 % Build global face to global face sparse array
-SpFToF = SpFToV*SpFToV’ - speye(TotalFaces);
+SpFToF = SpFToV*SpFToV' - speye(TotalFaces);
 % Find complete face to face connections
 [faces1, faces2] = find(SpFToF==1);
 % Convert face global number to element and face numbers
@@ -27,7 +27,7 @@ element2 = floor( (faces2-1)/Nfaces ) + 1;
 face2 = mod( (faces2-1), Nfaces ) + 1;
 % Rearrange into Nelements x Nfaces sized arrays
 ind = sub2ind([K, Nfaces], element1, face1);
-EToE = (1:K)’*ones(1,Nfaces);
+EToE = (1:K)'*ones(1,Nfaces);
 EToF = ones(K,1)*(1:Nfaces);
 EToE(ind) = element2; EToF(ind) = face2;
 return

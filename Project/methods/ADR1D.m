@@ -1,4 +1,4 @@
-function [u] = Advec1D(u, FinalTime)
+function [u] = ADR1D(u, FinalTime)
 % function [u] = Advec1D(u, FinalTime)
 % Purpose : Integrate 1D advection until FinalTime starting with
 % initial the condition, u

@@ -51,25 +51,13 @@ K = 10;
 StartUp1D;
 
 FinalTime = 0.01;
-C0 = C0fun(x,1,-0.2,0.2);
-
-figure(1)
-plot(x,C0)
-hold on
-
-[C] = ADR1D(C0,FinalTime);
-
-figure(1)
-plot(x,C)
-
-
+C0 = 
 
 
 function C0 = C0fun(x,magnitude,x1,x2)
     C0 = zeros(size(x));
-    ids = (x>x1) & (x<x2);
-    C0(ids) = magnitude;
-end
+    ids = (x>x1).*(x<x2);
+    C0(ids) = 1;
 
 
 
