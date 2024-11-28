@@ -14,7 +14,7 @@ Nsteps = ceil(FinalTime/dt); dt = FinalTime/Nsteps;
 for tstep=1:Nsteps
     for INTRK = 1:5
         timelocal = time + rk4c(INTRK)*dt;
-        [rhsu] = AdvecRHS1D(u, timelocal, v);
+        [rhsu] = ADR_RHS_1D(u, timelocal, v);
         resu = rk4a(INTRK)*resu + dt*rhsu;
         u = u+rk4b(INTRK)*resu;
     end;
