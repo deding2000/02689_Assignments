@@ -10,17 +10,15 @@ resu = zeros(Np,K);
 xmin = min(abs(x(1,:)-x(2,:)));
 CFL=0.75; dt = CFL/(2*pi)*xmin; dt = .5*dt;
 Nsteps = ceil(FinalTime/dt); dt = FinalTime/Nsteps;
-% advection speed
-a = 2*pi;
 % outer time step loop
 for tstep=1:Nsteps
-for INTRK = 1:5
-timelocal = time + rk4c(INTRK)*dt;
-[rhsu] = AdvecRHS1D(u, timelocal, a);
-resu = rk4a(INTRK)*resu + dt*rhsu;
-u = u+rk4b(INTRK)*resu;
-end;
-% Increment time
-time = time+dt;
+    for INTRK = 1:5
+        timelocal = time + rk4c(INTRK)*dt;
+        [rhsu] = AdvecRHS1D(u, timelocal, v);
+        resu = rk4a(INTRK)*resu + dt*rhsu;
+        u = u+rk4b(INTRK)*resu;
+    end;
+    % Increment time
+    time = time+dt;
 end;
 return
