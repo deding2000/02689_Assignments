@@ -6,8 +6,8 @@ Globals1D;
 v = 1;
 lambda = 1;
 R = 1;
-N = 3;
-K = 50;
+N = 2;
+K = 40;
 D = 0.01;
 alp = 1; % 1 is central flux and 0 is upwind flux
 StartUp1D;
@@ -26,11 +26,14 @@ for t = linspace(0,FinalTime,2)
     hold on
 end
 
-figure(2)
-plot(xx,true_C)
+%figure(2)
+%plot(xx,true_C)
 %plot(x,C0)
 hold on
-plot(x,C)
+plot(x,C,'black')
+xlabel('$x$','Interpreter','latex') 
+ylabel('$C$','Interpreter','latex')
+legend({'$C(x,0)$','$C(x,0.1)$','$C_N(x,0.1)$'},'Location','northeast','Interpreter','latex')
 
 function C0 = C0fun(x,magnitude,x1,x2)
     C0 = zeros(size(x));

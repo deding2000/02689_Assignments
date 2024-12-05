@@ -1,4 +1,4 @@
-function [rhsu] = ADR_RHS_withq(u,time,D)
+function [rhsu] = ADR_RHS_withq(u,D)
 % function [rhsu] = AdvecRHS1D(u,time)
 % Purpose : Evaluate RHS flux in 1D ADR equation with first order rewrite
 % COMPARE WITH page 256 in yellow book
@@ -13,7 +13,7 @@ uout=0;
 du(mapO) = 2.0*(u(vmapO)-uout);
 
 % Compute q and jumps
-q = sqrt(D)*(rx.*(Dr*u) - LIFT*(Fscale.*(nx.*du)));
+q = sqrt(D)*(rx.*(Dr*u) - LIFT*(Fscale.*(nx.*du/4.0)));
 dq = zeros(Nfaces,K); dq(:) = (q(vmapM)-q(vmapP))/2.0;
 
 % impose boundary condition - Dirichlet conditions

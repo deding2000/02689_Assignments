@@ -17,7 +17,7 @@ for tstep=1:Nsteps
     for INTRK = 1:5
         timelocal = time + rk4c(INTRK)*dt;
         %[rhsu] = ADR_RHS_1D(u, timelocal);
-        [rhsu] = ADR_RHS_withq(u, timelocal,D);
+        [rhsu] = ADR_RHS_withq(u,D);
         resu = rk4a(INTRK)*resu + dt*rhsu;
         u = u+rk4b(INTRK)*resu;
     end
