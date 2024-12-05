@@ -3,6 +3,7 @@ close all
 clearvars
 addpath(genpath(pwd))
 Globals1D;
+upwind = true;
 v = 1;
 lambda = 1;
 R = 1;
@@ -16,7 +17,7 @@ x1 = -0.2;
 x2 = -x1;
 C0_peak = 1;
 C0 = C0fun(x,C0_peak,x1,x2);
-[C] = ADR1D_withq(C0,FinalTime,D);
+[C] = ADR1D_withq(C0,FinalTime,D,upwind);
 
 figure(1)
 xx = linspace(-1,1);

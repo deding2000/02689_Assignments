@@ -1,4 +1,4 @@
-function [u] = ADR1D_withq(u, FinalTime,D)
+function [u] = ADR1D_withq(u, FinalTime,D,upwind)
 % function [u] = Advec1D(u, FinalTime)
 % Purpose : Integrate 1D ADR equation until FinalTime starting with
 % initial the condition, u
@@ -17,7 +17,7 @@ for tstep=1:Nsteps
     for INTRK = 1:5
         timelocal = time + rk4c(INTRK)*dt;
         %[rhsu] = ADR_RHS_1D(u, timelocal);
-        [rhsu] = ADR_RHS_withq(u,D);
+        [rhsu] = ADR_RHS_withq(u,D,upwind);
         resu = rk4a(INTRK)*resu + dt*rhsu;
         u = u+rk4b(INTRK)*resu;
     end

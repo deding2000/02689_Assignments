@@ -2,6 +2,7 @@ close all
 clearvars
 addpath(genpath(pwd))
 Globals1D;
+upwind = false;
 v = 1;
 lambda = 1;
 R = 1;
@@ -16,7 +17,7 @@ LN = zeros(BIGN,BIGN);
 for i = 1:BIGN
 ev = zeros(N+1,K);
 ev(i) = 1;
-[rhsu] = ADR_RHS_withq(ev,D);
+[rhsu] = ADR_RHS_withq(ev,D,upwind);
 LN(:,i) = rhsu(:);
 end
 

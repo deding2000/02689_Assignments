@@ -1,43 +1,41 @@
-function [rhsu] = ADR_RHS_withq(u,D)
-% function [rhsu] = AdvecRHS1D(u,time)
+function [rhsu] = ADR_RHS_withq(u,D,upwind)
+% function [rhsu] = AdvecRHS1D_withq(u,time)
 % Purpose : Evaluate RHS flux in 1D ADR equation with first order rewrite
-% COMPARE WITH page 256 in yellow book
+
 Globals1D;
 % form field differences at faces
 du = zeros(Nfp*Nfaces,K); du(:) = u(vmapM)-u(vmapP);
 
 % impose boundary condition at x=-1,1
 uin = 0;
-du(mapI) = 2.0*(u(vmapI)-uin);
+du(mapI) = (u(vmapI)-uin); %*2.0
 uout=0;
-du(mapO) = 2.0*(u(vmapO)-uout);
+du(mapO) = (u(vmapO)-uout); %*2.0
 
-% Compute q and jumps
-q = sqrt(D)*(rx.*(Dr*u) - LIFT*(Fscale.*(nx.*du/4.0)));
+% Compute q with central flux
+q = sqrt(D)*(rx.*(Dr*u) - LIFT*(Fscale.*(nx.*du/2.0)));
 dq = zeros(Nfaces,K); dq(:) = (q(vmapM)-q(vmapP))/2.0;
 
 % impose boundary condition - Dirichlet conditions
 dq(mapI) = 0.0; dq(mapO) = 0.0;
 
-% Evaluate nonlinear flux (maybe Lax-Friedrich flux - we should use something
-% else?)
-du2 = zeros(Nfp*Nfaces,K); du2(:) = (u(vmapM)-u(vmapP))/2.0;
+% Flux for advection term
+du2 = zeros(Nfp*Nfaces,K); 
+if not(upwind)
+% Central flux
+du2(:) = (u(vmapM)-u(vmapP))/2.0;
+du2(mapI)=(u(vmapI)-uin); du2(mapO)=(u(vmapO)-uout);
+flux = nx.*(du2*v - sqrt(D)*dq) - 1/2.0.*du;
+end
 
-% impose boundary condition
-du2(mapI)=(u(vmapI).^1-uin.^1); du2(mapO)=(u(vmapO).^1-uout.^1);
+% Upwind flux
+if upwind
+du2(:) = (u(vmapM)-u(vmapP)).*(v*nx(:)-(1-0)*abs(v*nx(:)))/2;
+du2 (mapI) = (u(vmapI)- uin ).*(v*nx(mapI)-(1-0)*abs(v*nx(mapI)))/2;
+flux = -nx.*(sqrt(D)*dq) - du/2.0 + du2;
+end
 
-% Compute flux
-maxvel = max(max(abs(u)));
-
-% penalty scaling -- See Chapter 7.2 ????
-%tau = .25*reshape(N*N./max(2*J(vmapP),2*J(vmapM)), Nfp*Nfaces, K);
-tau=0;
-
-% flux term
-flux = nx.*(du2*v - sqrt(D)*dq) - maxvel/2.0.*du ...
-- sqrt(D)*tau.*du;
-
-% local derivatives of field
+% Local derivatives
 dfdr = Dr*(u*v - sqrt(D)*q);
 
 % compute right hand sides of the semi-discrete PDE
