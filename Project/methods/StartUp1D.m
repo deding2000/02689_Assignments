@@ -11,7 +11,7 @@ r = JacobiGL(0,0,N);
 V = Vandermonde1D(N, r); invV = inv(V);
 Dr = Dmatrix1D(N, r, V);
 % Create surface integral terms
-LIFT = Lift1D();
+LIFT = LIFT1D();
 % build coordinates of all the nodes
 va = EToV(:,1)'; vb = EToV(:,2)';
 x = ones(N+1,1)*VX(va) + 0.5*(r+1)*(VX(vb)-VX(va));

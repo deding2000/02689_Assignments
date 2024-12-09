@@ -1,3 +1,6 @@
+%% 
+% Plot errors for the ADR equation in 1D using the DG-FEM method
+%  with multiple domains
 close all
 clearvars
 addpath(genpath(pwd))
@@ -5,12 +8,12 @@ Globals1D;
 v = 1;
 lambda = 1;
 R = 1;
-
+upwind = false;
 D = 0.01;
 alp = 1;
 
 Ns = [1,2,3,4];
-KS = [20,30,50,100];
+KS = [20,40,60,80,100];
 figure
 for NN = Ns
 N = NN;
@@ -49,9 +52,9 @@ Fscale = 1./(J(Fmask,:));
 [EToE, EToF] = Connect1D(EToV);
 % Build connectivity maps
 [vmapM, vmapP, vmapB, mapB] = BuildMaps1D;
-error = [error,compute_error(N,K,x,D,lambda,R,v)];
+error = [error,compute_error(N,K,x,D,lambda,R,v,upwind)];
 end
-
+sprintf( '%d', error )
 loglog(KS,error)
 hold on
 end

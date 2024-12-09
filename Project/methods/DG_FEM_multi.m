@@ -1,4 +1,5 @@
 %% 
+% Solve ADR equation in 1D using the DG-FEM method with multiple domains
 close all
 clearvars
 addpath(genpath(pwd))

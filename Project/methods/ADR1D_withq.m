@@ -1,14 +1,14 @@
 function [u] = ADR1D_withq(u, FinalTime,D,upwind)
 % function [u] = Advec1D(u, FinalTime)
 % Purpose : Integrate 1D ADR equation until FinalTime starting with
-% initial the condition, u
+% initial condition u
 Globals1D;
 time = 0;
 % Runge-Kutta residual storage
 resu = zeros(Np,K);
-% compute time step size
+% compute time step size based on CFL condition
 xmin = min(abs(x(1,:)-x(2,:)));
-CFL=0.25; % 0.75 before
+CFL=0.25;
 dt = CFL*(xmin)^2; 
 dt = .5*dt;
 Nsteps = ceil(FinalTime/dt); dt = FinalTime/Nsteps;
