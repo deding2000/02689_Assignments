@@ -10,7 +10,7 @@ global Nfaces EToE EToF
 global V invV
 global NODETOL
 % Parameters of model
-global D v lambda R
+global v lambda R
 
 % Low storage Runge-Kutta coefficients
 rk4a = [ 0.0 ...

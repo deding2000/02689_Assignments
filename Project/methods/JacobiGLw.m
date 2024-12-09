@@ -29,7 +29,7 @@ w(N+1) = w(1);
 
 for i = 2:N
     % Weight formula using Jacobi polynomial values
-    P0 = JacobiP(x(i), alpha, beta, 0, false); % Evaluate P_0
+    P0 = JacobiP(x(i), alpha, beta, 0); % Evaluate P_0
     w(i) = wint(i-1) / P0^2;            % Normalize using P_0
 end
 
